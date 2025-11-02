@@ -1,0 +1,2903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="Complete SRE and DevOps Interview Handbook - Crack interviews at Google, Apple, Amazon, Microsoft, LinkedIn">
+    <title>SRE & DevOps Interview Handbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Mobile-first responsive design - optimized for landscape */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                font-size: 0.9rem;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0.5rem;
+            }
+            .header {
+                padding: 0.5rem;
+            }
+            .chapter-content {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            body {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: clamp(1.2rem, 5vw, 2rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--text-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chapter {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .chapter h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chapter-content {
+            margin-top: 1rem;
+        }
+
+        .chapter-content h3 {
+            color: var(--secondary-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+        }
+
+        .chapter-content h4 {
+            color: var(--text-color);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .chapter-content ul, .chapter-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+        }
+
+        .command {
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question {
+            margin-bottom: 2rem;
+        }
+
+        .quiz-question h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary-color);
+            background: #f0f9ff;
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-color);
+            background: #dbeafe;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-color);
+            background: #dcfce7;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-color);
+            background: #fee2e2;
+        }
+
+        .quiz-btn {
+            padding: 0.75rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .quiz-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .quiz-score {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 2rem;
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            height: 200px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .flashcard-back {
+            background: white;
+            color: var(--text-color);
+            transform: rotateY(180deg);
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            transition: width 0.3s;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .topic-tag {
+            padding: 0.5rem;
+            background: #f1f5f9;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .collapse-indicator {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .chapter.collapsed .collapse-indicator {
+            transform: rotate(-90deg);
+        }
+
+        .chapter.collapsed .chapter-content {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .flashcard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .topic-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 SRE & DevOps Interview Handbook</h1>
+        <p>Complete Guide to Crack Interviews at Google, Apple, Amazon, Microsoft, LinkedIn & More</p>
+    </div>
+
+    <div class="container">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search topics, commands, concepts...">
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('handbook')">📚 Handbook</button>
+            <button class="tab-btn" onclick="showTab('quiz')">❓ Quiz</button>
+            <button class="tab-btn" onclick="showTab('flashcards')">🎴 Flashcards</button>
+            <button class="tab-btn" onclick="showTab('topics')">📋 All Topics</button>
+        </div>
+
+        <!-- Handbook Section -->
+        <div id="handbook" class="content-section active">
+            <!-- Chapter 1: Linux Fundamentals -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 1: Linux Fundamentals & Command Line Mastery</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>1.1 Linux File System Hierarchy</h3>
+                    <ul>
+                        <li><span class="command">/bin</span> - Essential command binaries (ls, cp, mv, rm)</li>
+                        <li><span class="command">/sbin</span> - System binaries (fsck, init, route)</li>
+                        <li><span class="command">/etc</span> - System configuration files</li>
+                        <li><span class="command">/home</span> - User home directories</li>
+                        <li><span class="command">/var</span> - Variable files (logs, caches, spool files)</li>
+                        <li><span class="command">/tmp</span> - Temporary files</li>
+                        <li><span class="command">/usr</span> - User programs and data</li>
+                        <li><span class="command">/opt</span> - Optional application packages</li>
+                        <li><span class="command">/proc</span> - Virtual filesystem for process info</li>
+                        <li><span class="command">/sys</span> - Device and kernel information</li>
+                    </ul>
+
+                    <h3>1.2 Essential Linux Commands</h3>
+                    <h4>File Operations</h4>
+                    <div class="code-block">ls -la        # List all files with details
+pwd           # Print working directory
+cd /path      # Change directory
+mkdir -p dir  # Create directory with parents
+rm -rf dir    # Remove directory recursively
+cp -r src dst # Copy recursively
+mv src dst    # Move or rename
+touch file    # Create empty file
+ln -s target link # Create symbolic link</div>
+
+                    <h4>File Viewing & Editing</h4>
+                    <div class="code-block">cat file           # Display file content
+less file          # Page through file
+head -n 20 file    # First 20 lines
+tail -n 20 file    # Last 20 lines
+tail -f file       # Follow file updates
+grep pattern file  # Search for pattern
+sed 's/old/new/g'  # Stream editor
+awk '{print $1}'   # Pattern scanning
+vi/vim file        # Text editor
+nano file          # Simple text editor</div>
+
+                    <h4>File Permissions & Ownership</h4>
+                    <div class="code-block">chmod 755 file        # Change permissions
+chmod u+x file        # Add execute for user
+chmod -R 644 dir      # Recursive permissions
+chown user:group file # Change ownership
+chgrp group file      # Change group
+umask 022             # Set default permissions</div>
+
+                    <h3>1.3 Process Management</h3>
+                    <div class="code-block">ps aux              # List all processes
+ps -ef              # Full format listing
+top                 # Real-time process viewer
+htop                # Interactive process viewer
+kill -9 PID         # Force kill process
+killall name        # Kill by process name
+pkill pattern       # Kill by pattern
+pgrep pattern       # Find process by pattern
+nice -n 10 command  # Set process priority
+renice -n 5 PID     # Change priority
+bg                  # Background job
+fg                  # Foreground job
+jobs                # List jobs
+nohup command &     # Run detached from terminal</div>
+
+                    <h3>1.4 System Monitoring</h3>
+                    <div class="code-block">uptime              # System uptime
+free -h             # Memory usage
+df -h               # Disk space
+du -sh dir          # Directory size
+iostat              # I/O statistics
+vmstat              # Virtual memory stats
+netstat -tulpn      # Network connections
+ss -tulpn           # Socket statistics
+lsof                # List open files
+lsof -i :8080       # Files using port 8080
+sar                 # System activity report
+dmesg               # Kernel ring buffer
+journalctl          # Systemd logs</div>
+
+                    <h3>1.5 User & Group Management</h3>
+                    <div class="code-block">useradd username      # Add user
+usermod -aG group user # Add to group
+userdel -r username    # Delete user
+passwd username        # Change password
+groupadd groupname     # Add group
+groupdel groupname     # Delete group
+id username            # User info
+who                    # Logged in users
+w                      # Who and what
+last                   # Login history
+sudo -i                # Root shell
+su - username          # Switch user</div>
+
+                    <h3>1.6 Package Management</h3>
+                    <h4>Debian/Ubuntu (APT)</h4>
+                    <div class="code-block">apt update                 # Update package lists
+apt upgrade                # Upgrade packages
+apt install package        # Install package
+apt remove package         # Remove package
+apt autoremove             # Remove unused packages
+apt search keyword         # Search packages
+dpkg -i package.deb        # Install .deb
+dpkg -l                    # List installed</div>
+
+                    <h4>RHEL/CentOS (YUM/DNF)</h4>
+                    <div class="code-block">yum update                 # Update packages
+yum install package        # Install package
+yum remove package         # Remove package
+yum search keyword         # Search packages
+rpm -ivh package.rpm       # Install .rpm
+rpm -qa                    # List installed
+dnf install package        # DNF installer</div>
+
+                    <h3>1.7 Network Commands</h3>
+                    <div class="code-block">ip addr show            # IP addresses
+ip route show           # Routing table
+ping host               # Test connectivity
+traceroute host         # Trace route
+nslookup domain         # DNS lookup
+dig domain              # DNS query
+host domain             # DNS lookup
+curl url                # Transfer data
+wget url                # Download file
+nc -zv host port        # Port scanning
+tcpdump -i eth0         # Packet capture
+iptables -L             # Firewall rules
+firewall-cmd --list-all # Firewalld status</div>
+
+                    <h3>1.8 Text Processing</h3>
+                    <div class="code-block">grep -r pattern dir     # Recursive search
+grep -i pattern file    # Case insensitive
+grep -v pattern file    # Invert match
+cut -d: -f1 /etc/passwd # Cut fields
+sort file               # Sort lines
+uniq file               # Remove duplicates
+wc -l file              # Count lines
+tr 'a-z' 'A-Z'          # Translate chars
+sed -n '10,20p' file    # Print lines 10-20
+awk -F: '{print $1}' file # Print first field
+diff file1 file2        # Compare files
+comm file1 file2        # Compare sorted files</div>
+
+                    <h3>1.9 Archiving & Compression</h3>
+                    <div class="code-block">tar -czf archive.tar.gz dir  # Create gzip archive
+tar -xzf archive.tar.gz      # Extract gzip archive
+tar -cjf archive.tar.bz2 dir # Create bzip2 archive
+tar -xjf archive.tar.bz2     # Extract bzip2
+zip -r archive.zip dir       # Create zip
+unzip archive.zip            # Extract zip
+gzip file                    # Compress file
+gunzip file.gz               # Decompress
+bzip2 file                   # Compress with bzip2
+bunzip2 file.bz2             # Decompress bzip2</div>
+
+                    <h3>1.10 System Information</h3>
+                    <div class="code-block">uname -a                # Kernel info
+hostname                # System hostname
+hostnamectl             # System info
+lscpu                   # CPU info
+lsblk                   # Block devices
+lspci                   # PCI devices
+lsusb                   # USB devices
+dmidecode               # Hardware info
+cat /proc/cpuinfo       # CPU details
+cat /proc/meminfo       # Memory details</div>
+                </div>
+            </div>
+
+            <!-- Chapter 2: Networking & Protocols -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 2: Networking & Protocols</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>2.1 OSI Model</h3>
+                    <ol>
+                        <li><strong>Layer 7 - Application:</strong> HTTP, FTP, SMTP, DNS</li>
+                        <li><strong>Layer 6 - Presentation:</strong> SSL/TLS, encryption</li>
+                        <li><strong>Layer 5 - Session:</strong> Session management</li>
+                        <li><strong>Layer 4 - Transport:</strong> TCP, UDP</li>
+                        <li><strong>Layer 3 - Network:</strong> IP, ICMP, routing</li>
+                        <li><strong>Layer 2 - Data Link:</strong> Ethernet, switches</li>
+                        <li><strong>Layer 1 - Physical:</strong> Cables, hubs</li>
+                    </ol>
+
+                    <h3>2.2 TCP/IP Model</h3>
+                    <ul>
+                        <li><strong>Application Layer:</strong> HTTP, FTP, DNS, SMTP</li>
+                        <li><strong>Transport Layer:</strong> TCP, UDP</li>
+                        <li><strong>Internet Layer:</strong> IP, ICMP, ARP</li>
+                        <li><strong>Network Access Layer:</strong> Ethernet, WiFi</li>
+                    </ul>
+
+                    <h3>2.3 HTTP/HTTPS Protocols</h3>
+                    <h4>HTTP Methods</h4>
+                    <ul>
+                        <li><strong>GET:</strong> Retrieve resource</li>
+                        <li><strong>POST:</strong> Create resource</li>
+                        <li><strong>PUT:</strong> Update/replace resource</li>
+                        <li><strong>PATCH:</strong> Partial update</li>
+                        <li><strong>DELETE:</strong> Remove resource</li>
+                        <li><strong>HEAD:</strong> Get headers only</li>
+                        <li><strong>OPTIONS:</strong> Get allowed methods</li>
+                    </ul>
+
+                    <h4>HTTP Status Codes</h4>
+                    <ul>
+                        <li><strong>1xx:</strong> Informational (100 Continue)</li>
+                        <li><strong>2xx:</strong> Success (200 OK, 201 Created, 204 No Content)</li>
+                        <li><strong>3xx:</strong> Redirection (301 Moved, 302 Found, 304 Not Modified)</li>
+                        <li><strong>4xx:</strong> Client Error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found)</li>
+                        <li><strong>5xx:</strong> Server Error (500 Internal Error, 502 Bad Gateway, 503 Service Unavailable)</li>
+                    </ul>
+
+                    <h3>2.4 DNS (Domain Name System)</h3>
+                    <h4>DNS Record Types</h4>
+                    <ul>
+                        <li><strong>A:</strong> IPv4 address</li>
+                        <li><strong>AAAA:</strong> IPv6 address</li>
+                        <li><strong>CNAME:</strong> Canonical name (alias)</li>
+                        <li><strong>MX:</strong> Mail exchange</li>
+                        <li><strong>TXT:</strong> Text records</li>
+                        <li><strong>NS:</strong> Name server</li>
+                        <li><strong>SOA:</strong> Start of authority</li>
+                        <li><strong>PTR:</strong> Reverse DNS lookup</li>
+                    </ul>
+
+                    <h4>DNS Resolution Process</h4>
+                    <ol>
+                        <li>Check local cache</li>
+                        <li>Query recursive resolver</li>
+                        <li>Query root nameserver</li>
+                        <li>Query TLD nameserver</li>
+                        <li>Query authoritative nameserver</li>
+                        <li>Return IP address</li>
+                    </ol>
+
+                    <h3>2.5 Load Balancing</h3>
+                    <h4>Load Balancing Algorithms</h4>
+                    <ul>
+                        <li><strong>Round Robin:</strong> Sequential distribution</li>
+                        <li><strong>Least Connections:</strong> Server with fewest connections</li>
+                        <li><strong>IP Hash:</strong> Hash client IP</li>
+                        <li><strong>Weighted Round Robin:</strong> Weight-based distribution</li>
+                        <li><strong>Least Response Time:</strong> Fastest server</li>
+                    </ul>
+
+                    <h4>Load Balancer Types</h4>
+                    <ul>
+                        <li><strong>Layer 4 (Transport):</strong> TCP/UDP level (fast, simple)</li>
+                        <li><strong>Layer 7 (Application):</strong> HTTP level (smart routing)</li>
+                    </ul>
+
+                    <h3>2.6 SSL/TLS</h3>
+                    <h4>TLS Handshake</h4>
+                    <ol>
+                        <li>Client Hello</li>
+                        <li>Server Hello + Certificate</li>
+                        <li>Certificate Verification</li>
+                        <li>Key Exchange</li>
+                        <li>Secure Communication</li>
+                    </ol>
+
+                    <h4>Common SSL Commands</h4>
+                    <div class="code-block">openssl genrsa -out private.key 2048
+openssl req -new -key private.key -out cert.csr
+openssl x509 -req -in cert.csr -signkey private.key -out cert.crt
+openssl s_client -connect domain:443
+openssl x509 -in cert.crt -text -noout</div>
+
+                    <h3>2.7 Ports & Services</h3>
+                    <ul>
+                        <li><strong>20/21:</strong> FTP</li>
+                        <li><strong>22:</strong> SSH</li>
+                        <li><strong>23:</strong> Telnet</li>
+                        <li><strong>25:</strong> SMTP</li>
+                        <li><strong>53:</strong> DNS</li>
+                        <li><strong>80:</strong> HTTP</li>
+                        <li><strong>110:</strong> POP3</li>
+                        <li><strong>143:</strong> IMAP</li>
+                        <li><strong>443:</strong> HTTPS</li>
+                        <li><strong>3306:</strong> MySQL</li>
+                        <li><strong>5432:</strong> PostgreSQL</li>
+                        <li><strong>6379:</strong> Redis</li>
+                        <li><strong>8080:</strong> HTTP Alt</li>
+                        <li><strong>27017:</strong> MongoDB</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chapter 3: Docker & Containers -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 3: Docker & Container Technologies</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>3.1 Docker Fundamentals</h3>
+                    <h4>Docker Architecture</h4>
+                    <ul>
+                        <li><strong>Docker Client:</strong> CLI interface</li>
+                        <li><strong>Docker Daemon:</strong> Background service</li>
+                        <li><strong>Docker Registry:</strong> Image storage (Docker Hub)</li>
+                        <li><strong>Images:</strong> Read-only templates</li>
+                        <li><strong>Containers:</strong> Running instances</li>
+                    </ul>
+
+                    <h3>3.2 Essential Docker Commands</h3>
+                    <h4>Image Management</h4>
+                    <div class="code-block">docker pull image:tag        # Download image
+docker images                 # List images
+docker build -t name:tag .    # Build image
+docker tag source target      # Tag image
+docker push image:tag         # Upload image
+docker rmi image              # Remove image
+docker history image          # Image layers
+docker inspect image          # Image details</div>
+
+                    <h4>Container Management</h4>
+                    <div class="code-block">docker run -d -p 80:80 --name web nginx  # Run container
+docker ps                     # List running containers
+docker ps -a                  # List all containers
+docker start container        # Start container
+docker stop container         # Stop container
+docker restart container      # Restart container
+docker rm container           # Remove container
+docker logs container         # View logs
+docker logs -f container      # Follow logs
+docker exec -it container bash # Execute command
+docker cp file container:/path # Copy files
+docker stats                  # Resource usage</div>
+
+                    <h4>Docker Networks</h4>
+                    <div class="code-block">docker network ls             # List networks
+docker network create net     # Create network
+docker network inspect net    # Network details
+docker network connect net container
+docker network disconnect net container
+docker run --network=net image</div>
+
+                    <h4>Docker Volumes</h4>
+                    <div class="code-block">docker volume ls              # List volumes
+docker volume create vol      # Create volume
+docker volume inspect vol     # Volume details
+docker volume rm vol          # Remove volume
+docker run -v vol:/data image # Mount volume
+docker run -v /host:/container image # Bind mount</div>
+
+                    <h3>3.3 Dockerfile Best Practices</h3>
+                    <div class="code-block"># Multi-stage build
+FROM node:16 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:16-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --production
+EXPOSE 3000
+USER node
+CMD ["node", "dist/index.js"]</div>
+
+                    <h4>Dockerfile Instructions</h4>
+                    <ul>
+                        <li><strong>FROM:</strong> Base image</li>
+                        <li><strong>WORKDIR:</strong> Set working directory</li>
+                        <li><strong>COPY/ADD:</strong> Copy files</li>
+                        <li><strong>RUN:</strong> Execute commands</li>
+                        <li><strong>ENV:</strong> Set environment variables</li>
+                        <li><strong>EXPOSE:</strong> Declare ports</li>
+                        <li><strong>CMD:</strong> Default command</li>
+                        <li><strong>ENTRYPOINT:</strong> Configure container executable</li>
+                        <li><strong>USER:</strong> Set user</li>
+                        <li><strong>VOLUME:</strong> Create mount point</li>
+                    </ul>
+
+                    <h3>3.4 Docker Compose</h3>
+                    <div class="code-block">version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+  db:
+    image: postgres:14
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=secret
+volumes:
+  db-data:</div>
+
+                    <h4>Docker Compose Commands</h4>
+                    <div class="code-block">docker-compose up -d          # Start services
+docker-compose down           # Stop services
+docker-compose ps             # List services
+docker-compose logs -f        # Follow logs
+docker-compose exec service sh # Execute command
+docker-compose build          # Build images
+docker-compose pull           # Pull images
+docker-compose restart        # Restart services</div>
+
+                    <h3>3.5 Container Security</h3>
+                    <ul>
+                        <li>Use minimal base images (alpine)</li>
+                        <li>Run as non-root user</li>
+                        <li>Scan images for vulnerabilities</li>
+                        <li>Use secrets management</li>
+                        <li>Limit resources (CPU, memory)</li>
+                        <li>Use read-only filesystems</li>
+                        <li>Keep images updated</li>
+                        <li>Sign and verify images</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chapter 4: Kubernetes -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 4: Kubernetes (K8s)</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>4.1 Kubernetes Architecture</h3>
+                    <h4>Control Plane Components</h4>
+                    <ul>
+                        <li><strong>kube-apiserver:</strong> API gateway</li>
+                        <li><strong>etcd:</strong> Distributed key-value store</li>
+                        <li><strong>kube-scheduler:</strong> Pod scheduling</li>
+                        <li><strong>kube-controller-manager:</strong> Controller loops</li>
+                        <li><strong>cloud-controller-manager:</strong> Cloud integration</li>
+                    </ul>
+
+                    <h4>Node Components</h4>
+                    <ul>
+                        <li><strong>kubelet:</strong> Node agent</li>
+                        <li><strong>kube-proxy:</strong> Network proxy</li>
+                        <li><strong>Container runtime:</strong> Docker, containerd, CRI-O</li>
+                    </ul>
+
+                    <h3>4.2 Kubernetes Objects</h3>
+                    <h4>Pods</h4>
+                    <div class="code-block">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    ports:
+    - containerPort: 80</div>
+
+                    <h4>Deployments</h4>
+                    <div class="code-block">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80</div>
+
+                    <h4>Services</h4>
+                    <div class="code-block">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer</div>
+
+                    <h3>4.3 kubectl Commands</h3>
+                    <h4>Cluster Management</h4>
+                    <div class="code-block">kubectl cluster-info          # Cluster info
+kubectl get nodes             # List nodes
+kubectl describe node node1   # Node details
+kubectl top nodes             # Node metrics
+kubectl cordon node1          # Mark unschedulable
+kubectl drain node1           # Drain node
+kubectl uncordon node1        # Mark schedulable</div>
+
+                    <h4>Pod Management</h4>
+                    <div class="code-block">kubectl get pods              # List pods
+kubectl get pods -A           # All namespaces
+kubectl describe pod name     # Pod details
+kubectl logs pod              # Pod logs
+kubectl logs -f pod           # Follow logs
+kubectl exec -it pod -- bash  # Execute command
+kubectl port-forward pod 8080:80
+kubectl delete pod name       # Delete pod</div>
+
+                    <h4>Deployments & Services</h4>
+                    <div class="code-block">kubectl create deployment name --image=nginx
+kubectl get deployments       # List deployments
+kubectl scale deploy name --replicas=5
+kubectl rollout status deploy name
+kubectl rollout history deploy name
+kubectl rollout undo deploy name
+kubectl expose deploy name --port=80 --type=LoadBalancer
+kubectl get services          # List services</div>
+
+                    <h4>ConfigMaps & Secrets</h4>
+                    <div class="code-block">kubectl create configmap name --from-file=config
+kubectl get configmaps        # List ConfigMaps
+kubectl create secret generic name --from-literal=key=value
+kubectl get secrets           # List secrets
+kubectl describe secret name  # Secret details</div>
+
+                    <h3>4.4 Kubernetes Networking</h3>
+                    <h4>Service Types</h4>
+                    <ul>
+                        <li><strong>ClusterIP:</strong> Internal cluster IP (default)</li>
+                        <li><strong>NodePort:</strong> Expose on node port (30000-32767)</li>
+                        <li><strong>LoadBalancer:</strong> Cloud load balancer</li>
+                        <li><strong>ExternalName:</strong> DNS CNAME record</li>
+                    </ul>
+
+                    <h4>Ingress</h4>
+                    <div class="code-block">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-service
+            port:
+              number: 80</div>
+
+                    <h3>4.5 Storage in Kubernetes</h3>
+                    <h4>PersistentVolume (PV)</h4>
+                    <div class="code-block">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-storage
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data</div>
+
+                    <h4>PersistentVolumeClaim (PVC)</h4>
+                    <div class="code-block">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi</div>
+
+                    <h3>4.6 Kubernetes Best Practices</h3>
+                    <ul>
+                        <li>Use namespaces for isolation</li>
+                        <li>Set resource requests and limits</li>
+                        <li>Use liveness and readiness probes</li>
+                        <li>Implement rolling updates</li>
+                        <li>Use ConfigMaps and Secrets</li>
+                        <li>Enable RBAC (Role-Based Access Control)</li>
+                        <li>Use Network Policies</li>
+                        <li>Implement Pod Security Policies</li>
+                        <li>Use Horizontal Pod Autoscaler</li>
+                        <li>Monitor with Prometheus and Grafana</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Chapter 5: Cloud Platforms -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 5: Cloud Platforms (AWS, GCP, Azure)</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>5.1 AWS (Amazon Web Services)</h3>
+                    <h4>Compute Services</h4>
+                    <ul>
+                        <li><strong>EC2:</strong> Virtual servers</li>
+                        <li><strong>Lambda:</strong> Serverless functions</li>
+                        <li><strong>ECS:</strong> Container orchestration</li>
+                        <li><strong>EKS:</strong> Managed Kubernetes</li>
+                        <li><strong>Fargate:</strong> Serverless containers</li>
+                        <li><strong>Elastic Beanstalk:</strong> PaaS</li>
+                    </ul>
+
+                    <h4>Storage Services</h4>
+                    <ul>
+                        <li><strong>S3:</strong> Object storage</li>
+                        <li><strong>EBS:</strong> Block storage</li>
+                        <li><strong>EFS:</strong> File storage</li>
+                        <li><strong>Glacier:</strong> Archival storage</li>
+                        <li><strong>Storage Gateway:</strong> Hybrid storage</li>
+                    </ul>
+
+                    <h4>Database Services</h4>
+                    <ul>
+                        <li><strong>RDS:</strong> Relational databases (MySQL, PostgreSQL, Oracle)</li>
+                        <li><strong>DynamoDB:</strong> NoSQL database</li>
+                        <li><strong>ElastiCache:</strong> In-memory cache (Redis, Memcached)</li>
+                        <li><strong>Aurora:</strong> MySQL/PostgreSQL compatible</li>
+                        <li><strong>Redshift:</strong> Data warehouse</li>
+                    </ul>
+
+                    <h4>Networking</h4>
+                    <ul>
+                        <li><strong>VPC:</strong> Virtual Private Cloud</li>
+                        <li><strong>Route 53:</strong> DNS service</li>
+                        <li><strong>CloudFront:</strong> CDN</li>
+                        <li><strong>ELB:</strong> Load balancers (ALB, NLB, CLB)</li>
+                        <li><strong>API Gateway:</strong> API management</li>
+                    </ul>
+
+                    <h4>AWS CLI Examples</h4>
+                    <div class="code-block">aws s3 ls                     # List S3 buckets
+aws s3 cp file s3://bucket    # Upload to S3
+aws ec2 describe-instances    # List EC2 instances
+aws ec2 start-instances --instance-ids i-xxx
+aws lambda list-functions     # List Lambda functions
+aws rds describe-db-instances # List RDS instances
+aws eks list-clusters         # List EKS clusters</div>
+
+                    <h3>5.2 GCP (Google Cloud Platform)</h3>
+                    <h4>Compute Services</h4>
+                    <ul>
+                        <li><strong>Compute Engine:</strong> VMs</li>
+                        <li><strong>Cloud Functions:</strong> Serverless</li>
+                        <li><strong>Cloud Run:</strong> Containerized apps</li>
+                        <li><strong>GKE:</strong> Managed Kubernetes</li>
+                        <li><strong>App Engine:</strong> PaaS</li>
+                    </ul>
+
+                    <h4>Storage & Databases</h4>
+                    <ul>
+                        <li><strong>Cloud Storage:</strong> Object storage</li>
+                        <li><strong>Persistent Disk:</strong> Block storage</li>
+                        <li><strong>Cloud SQL:</strong> Managed SQL</li>
+                        <li><strong>Firestore:</strong> NoSQL database</li>
+                        <li><strong>BigQuery:</strong> Data warehouse</li>
+                        <li><strong>Memorystore:</strong> Redis/Memcached</li>
+                    </ul>
+
+                    <h4>gcloud CLI Examples</h4>
+                    <div class="code-block">gcloud compute instances list # List VMs
+gcloud storage buckets list   # List buckets
+gcloud container clusters list # List GKE clusters
+gcloud sql instances list     # List SQL instances
+gcloud functions list         # List functions
+gcloud projects list          # List projects</div>
+
+                    <h3>5.3 Azure</h3>
+                    <h4>Compute Services</h4>
+                    <ul>
+                        <li><strong>Virtual Machines:</strong> IaaS VMs</li>
+                        <li><strong>Azure Functions:</strong> Serverless</li>
+                        <li><strong>AKS:</strong> Managed Kubernetes</li>
+                        <li><strong>App Service:</strong> PaaS</li>
+                        <li><strong>Container Instances:</strong> Serverless containers</li>
+                    </ul>
+
+                    <h4>Storage & Databases</h4>
+                    <ul>
+                        <li><strong>Blob Storage:</strong> Object storage</li>
+                        <li><strong>Managed Disks:</strong> Block storage</li>
+                        <li><strong>Azure SQL:</strong> Managed SQL</li>
+                        <li><strong>Cosmos DB:</strong> Multi-model NoSQL</li>
+                        <li><strong>Cache for Redis:</strong> In-memory cache</li>
+                    </ul>
+
+                    <h4>az CLI Examples</h4>
+                    <div class="code-block">az vm list                    # List VMs
+az storage account list       # List storage accounts
+az aks list                   # List AKS clusters
+az sql server list            # List SQL servers
+az functionapp list           # List function apps
+az group list                 # List resource groups</div>
+                </div>
+            </div>
+
+            <!-- Chapter 6: CI/CD -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 6: CI/CD Pipelines & DevOps Tools</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>6.1 Git & Version Control</h3>
+                    <h4>Essential Git Commands</h4>
+                    <div class="code-block">git init                      # Initialize repo
+git clone url                 # Clone repo
+git status                    # Check status
+git add file                  # Stage file
+git commit -m "message"       # Commit changes
+git push origin main          # Push to remote
+git pull origin main          # Pull from remote
+git branch                    # List branches
+git checkout -b branch        # Create branch
+git merge branch              # Merge branch
+git rebase main               # Rebase on main
+git log --oneline             # Commit history
+git diff                      # Show changes
+git stash                     # Stash changes
+git tag v1.0.0                # Create tag</div>
+
+                    <h4>Git Workflows</h4>
+                    <ul>
+                        <li><strong>GitFlow:</strong> main, develop, feature, release, hotfix</li>
+                        <li><strong>GitHub Flow:</strong> main, feature branches, PRs</li>
+                        <li><strong>Trunk-Based:</strong> Short-lived branches, frequent merges</li>
+                    </ul>
+
+                    <h3>6.2 Jenkins</h3>
+                    <h4>Jenkinsfile Pipeline</h4>
+                    <div class="code-block">pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f k8s/'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}</div>
+
+                    <h3>6.3 GitHub Actions</h3>
+                    <div class="code-block">name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - name: Install dependencies
+      run: npm ci
+    - name: Run tests
+      run: npm test
+    - name: Build
+      run: npm run build
+    - name: Deploy
+      run: |
+        kubectl apply -f k8s/</div>
+
+                    <h3>6.4 GitLab CI/CD</h3>
+                    <div class="code-block">stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+
+test:
+  stage: test
+  script:
+    - npm test
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl apply -f k8s/
+  only:
+    - main</div>
+
+                    <h3>6.5 Terraform (Infrastructure as Code)</h3>
+                    <div class="code-block">terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_instance" "web" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  
+  tags = {
+    Name = "WebServer"
+  }
+}</div>
+
+                    <h4>Terraform Commands</h4>
+                    <div class="code-block">terraform init                # Initialize
+terraform plan                # Plan changes
+terraform apply               # Apply changes
+terraform destroy             # Destroy infrastructure
+terraform fmt                 # Format files
+terraform validate            # Validate config
+terraform state list          # List resources
+terraform output              # Show outputs</div>
+
+                    <h3>6.6 Ansible (Configuration Management)</h3>
+                    <div class="code-block">---
+- name: Configure web servers
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+    
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+    
+    - name: Copy config
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify: Restart nginx
+  
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted</div>
+
+                    <h4>Ansible Commands</h4>
+                    <div class="code-block">ansible all -m ping          # Ping hosts
+ansible-playbook playbook.yml # Run playbook
+ansible-galaxy install role   # Install role
+ansible-vault encrypt file    # Encrypt file
+ansible-inventory --list      # List inventory</div>
+                </div>
+            </div>
+
+            <!-- Chapter 7: Monitoring & Observability -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 7: Monitoring, Logging & Observability</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>7.1 Prometheus</h3>
+                    <h4>Prometheus Query Language (PromQL)</h4>
+                    <div class="code-block"># Basic queries
+http_requests_total
+http_requests_total{job="api"}
+
+# Aggregation
+sum(http_requests_total)
+avg(cpu_usage)
+max(memory_usage)
+count(up == 1)
+
+# Rate & Increase
+rate(http_requests_total[5m])
+increase(http_requests_total[1h])
+
+# Percentiles
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))</div>
+
+                    <h4>Metric Types</h4>
+                    <ul>
+                        <li><strong>Counter:</strong> Monotonically increasing (requests, errors)</li>
+                        <li><strong>Gauge:</strong> Can go up/down (CPU, memory)</li>
+                        <li><strong>Histogram:</strong> Distribution of values</li>
+                        <li><strong>Summary:</strong> Similar to histogram with percentiles</li>
+                    </ul>
+
+                    <h3>7.2 Grafana</h3>
+                    <h4>Dashboard Best Practices</h4>
+                    <ul>
+                        <li>Use meaningful panel titles</li>
+                        <li>Group related metrics</li>
+                        <li>Set appropriate time ranges</li>
+                        <li>Use variables for flexibility</li>
+                        <li>Add annotations for events</li>
+                        <li>Configure alerts</li>
+                        <li>Use consistent color schemes</li>
+                    </ul>
+
+                    <h3>7.3 ELK Stack (Elasticsearch, Logstash, Kibana)</h3>
+                    <h4>Logstash Configuration</h4>
+                    <div class="code-block">input {
+  file {
+    path => "/var/log/app.log"
+    start_position => "beginning"
+  }
+}
+
+filter {
+  grok {
+    match => { "message" => "%{COMBINEDAPACHELOG}" }
+  }
+  date {
+    match => [ "timestamp", "dd/MMM/yyyy:HH:mm:ss Z" ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    index => "app-logs-%{+YYYY.MM.dd}"
+  }
+}</div>
+
+                    <h4>Elasticsearch Queries</h4>
+                    <div class="code-block">GET /app-logs/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "level": "ERROR" } },
+        { "range": { "@timestamp": { "gte": "now-1h" } } }
+      ]
+    }
+  }
+}</div>
+
+                    <h3>7.4 Splunk</h3>
+                    <h4>SPL (Search Processing Language)</h4>
+                    <div class="code-block">index=main source="/var/log/app.log" error
+| stats count by host
+| sort -count
+
+index=main sourcetype=access_combined
+| timechart span=5m count by status
+
+index=main
+| transaction user maxspan=30m
+| where duration > 1000</div>
+
+                    <h3>7.5 Application Performance Monitoring (APM)</h3>
+                    <h4>Key Metrics</h4>
+                    <ul>
+                        <li><strong>Response Time:</strong> Request/response latency</li>
+                        <li><strong>Throughput:</strong> Requests per second</li>
+                        <li><strong>Error Rate:</strong> Failed requests percentage</li>
+                        <li><strong>Apdex Score:</strong> User satisfaction metric</li>
+                        <li><strong>Transaction Traces:</strong> Detailed execution paths</li>
+                    </ul>
+
+                    <h4>APM Tools</h4>
+                    <ul>
+                        <li>New Relic</li>
+                        <li>Datadog</li>
+                        <li>Dynatrace</li>
+                        <li>AppDynamics</li>
+                        <li>Elastic APM</li>
+                    </ul>
+
+                    <h3>7.6 Distributed Tracing</h3>
+                    <h4>Concepts</h4>
+                    <ul>
+                        <li><strong>Trace:</strong> End-to-end request journey</li>
+                        <li><strong>Span:</strong> Single operation within trace</li>
+                        <li><strong>Context Propagation:</strong> Passing trace info</li>
+                        <li><strong>Sampling:</strong> Collecting subset of traces</li>
+                    </ul>
+
+                    <h4>Tools</h4>
+                    <ul>
+                        <li>Jaeger</li>
+                        <li>Zipkin</li>
+                        <li>OpenTelemetry</li>
+                        <li>AWS X-Ray</li>
+                    </ul>
+
+                    <h3>7.7 SLI, SLO, SLA</h3>
+                    <h4>Service Level Indicators (SLI)</h4>
+                    <ul>
+                        <li>Request latency (p50, p95, p99)</li>
+                        <li>Error rate</li>
+                        <li>Availability</li>
+                        <li>Throughput</li>
+                    </ul>
+
+                    <h4>Service Level Objectives (SLO)</h4>
+                    <ul>
+                        <li>99.9% availability (43.8 min downtime/month)</li>
+                        <li>99.99% availability (4.38 min downtime/month)</li>
+                        <li>p95 latency < 200ms</li>
+                        <li>Error rate < 0.1%</li>
+                    </ul>
+
+                    <h4>Service Level Agreements (SLA)</h4>
+                    <ul>
+                        <li>Contractual commitment</li>
+                        <li>Consequences for violation</li>
+                        <li>Usually less strict than SLO</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chapter 8: Site Reliability Engineering -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 8: Site Reliability Engineering (SRE) Principles</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>8.1 SRE Fundamentals (Google SRE)</h3>
+                    <h4>Core Principles</h4>
+                    <ul>
+                        <li><strong>Embrace Risk:</strong> 100% reliability is wrong target</li>
+                        <li><strong>Error Budgets:</strong> Balance velocity and reliability</li>
+                        <li><strong>Toil Reduction:</strong> Automate repetitive work</li>
+                        <li><strong>Monitoring:</strong> Observability over guessing</li>
+                        <li><strong>Capacity Planning:</strong> Organic growth + launches</li>
+                        <li><strong>Emergency Response:</strong> Incident management</li>
+                        <li><strong>Change Management:</strong> Progressive rollouts</li>
+                    </ul>
+
+                    <h3>8.2 Error Budgets</h3>
+                    <h4>Calculation</h4>
+                    <ul>
+                        <li>SLO: 99.9% availability</li>
+                        <li>Error Budget: 0.1% = 43.8 minutes/month</li>
+                        <li>If budget exceeded: freeze releases, focus on reliability</li>
+                        <li>If budget available: ship features faster</li>
+                    </ul>
+
+                    <h3>8.3 Toil</h3>
+                    <h4>Definition</h4>
+                    <ul>
+                        <li>Manual</li>
+                        <li>Repetitive</li>
+                        <li>Automatable</li>
+                        <li>Tactical (not strategic)</li>
+                        <li>No enduring value</li>
+                        <li>Scales linearly with service growth</li>
+                    </ul>
+
+                    <h4>Target: <50% time on toil</h4>
+
+                    <h3>8.4 Incident Management</h3>
+                    <h4>Incident Response Roles</h4>
+                    <ul>
+                        <li><strong>Incident Commander:</strong> Overall coordination</li>
+                        <li><strong>Operations Lead:</strong> Technical response</li>
+                        <li><strong>Communications Lead:</strong> Stakeholder updates</li>
+                        <li><strong>Planning Lead:</strong> Resource tracking</li>
+                    </ul>
+
+                    <h4>Incident Lifecycle</h4>
+                    <ol>
+                        <li><strong>Detection:</strong> Alert fires or user report</li>
+                        <li><strong>Triage:</strong> Assess severity and impact</li>
+                        <li><strong>Mitigation:</strong> Stop the bleeding</li>
+                        <li><strong>Resolution:</strong> Fix root cause</li>
+                        <li><strong>Postmortem:</strong> Learn and improve</li>
+                    </ol>
+
+                    <h4>Severity Levels</h4>
+                    <ul>
+                        <li><strong>SEV-1:</strong> Critical impact, all hands on deck</li>
+                        <li><strong>SEV-2:</strong> Major impact, significant degradation</li>
+                        <li><strong>SEV-3:</strong> Minor impact, workaround available</li>
+                        <li><strong>SEV-4:</strong> Minimal impact, cosmetic issues</li>
+                    </ul>
+
+                    <h3>8.5 Postmortems (Blameless)</h3>
+                    <h4>Components</h4>
+                    <ul>
+                        <li><strong>Title:</strong> Brief description</li>
+                        <li><strong>Summary:</strong> Impact and root cause</li>
+                        <li><strong>Timeline:</strong> Event sequence</li>
+                        <li><strong>Root Cause:</strong> What went wrong and why</li>
+                        <li><strong>Impact:</strong> Who was affected, how much</li>
+                        <li><strong>Detection:</strong> How we found out</li>
+                        <li><strong>Resolution:</strong> How we fixed it</li>
+                        <li><strong>Action Items:</strong> Follow-up tasks with owners</li>
+                        <li><strong>Lessons Learned:</strong> What went well/badly</li>
+                    </ul>
+
+                    <h3>8.6 On-Call Best Practices</h3>
+                    <ul>
+                        <li>Define clear escalation paths</li>
+                        <li>Maintain runbooks for common issues</li>
+                        <li>Keep shift duration reasonable (1 week)</li>
+                        <li>Provide adequate rest after incidents</li>
+                        <li>Review and improve alert quality</li>
+                        <li>Compensate on-call time appropriately</li>
+                        <li>Share knowledge across team</li>
+                    </ul>
+
+                    <h3>8.7 Capacity Planning</h3>
+                    <h4>Key Activities</h4>
+                    <ul>
+                        <li>Measure organic growth</li>
+                        <li>Plan for launches and events</li>
+                        <li>Load testing</li>
+                        <li>Resource provisioning</li>
+                        <li>Cost optimization</li>
+                    </ul>
+
+                    <h3>8.8 Chaos Engineering</h3>
+                    <h4>Principles</h4>
+                    <ul>
+                        <li>Build hypothesis around steady state</li>
+                        <li>Vary real-world events</li>
+                        <li>Run experiments in production</li>
+                        <li>Automate experiments</li>
+                        <li>Minimize blast radius</li>
+                    </ul>
+
+                    <h4>Tools</h4>
+                    <ul>
+                        <li>Chaos Monkey (Netflix)</li>
+                        <li>Gremlin</li>
+                        <li>Chaos Mesh</li>
+                        <li>Litmus</li>
+                    </ul>
+
+                    <h3>8.9 Reliability Patterns</h3>
+                    <ul>
+                        <li><strong>Circuit Breaker:</strong> Stop cascading failures</li>
+                        <li><strong>Retry with Backoff:</strong> Handle transient errors</li>
+                        <li><strong>Bulkhead:</strong> Isolate resources</li>
+                        <li><strong>Rate Limiting:</strong> Protect from overload</li>
+                        <li><strong>Graceful Degradation:</strong> Partial functionality</li>
+                        <li><strong>Health Checks:</strong> Detect unhealthy instances</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Chapter 9: Databases -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 9: Database Management & Operations</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>9.1 SQL Databases</h3>
+                    <h4>PostgreSQL</h4>
+                    <div class="code-block">-- Basic queries
+SELECT * FROM users WHERE age > 25;
+INSERT INTO users (name, email) VALUES ('John', 'john@example.com');
+UPDATE users SET status = 'active' WHERE id = 1;
+DELETE FROM users WHERE id = 1;
+
+-- Joins
+SELECT u.name, o.order_id 
+FROM users u 
+JOIN orders o ON u.id = o.user_id;
+
+-- Aggregation
+SELECT COUNT(*), AVG(amount) FROM orders GROUP BY status;
+
+-- Indexes
+CREATE INDEX idx_user_email ON users(email);
+CREATE INDEX idx_composite ON orders(user_id, created_at);
+
+-- Transactions
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;</div>
+
+                    <h4>MySQL Administration</h4>
+                    <div class="code-block">-- User management
+CREATE USER 'app'@'localhost' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE ON mydb.* TO 'app'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Backup
+mysqldump -u root -p mydb > backup.sql
+mysql -u root -p mydb < backup.sql
+
+-- Replication
+SHOW MASTER STATUS;
+SHOW SLAVE STATUS;
+
+-- Performance
+SHOW PROCESSLIST;
+EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
+SHOW INDEX FROM users;</div>
+
+                    <h3>9.2 NoSQL Databases</h3>
+                    <h4>MongoDB</h4>
+                    <div class="code-block">// CRUD operations
+db.users.insertOne({name: "John", age: 30});
+db.users.find({age: {$gt: 25}});
+db.users.updateOne({_id: id}, {$set: {status: "active"}});
+db.users.deleteOne({_id: id});
+
+// Aggregation
+db.orders.aggregate([
+  {$match: {status: "completed"}},
+  {$group: {_id: "$user_id", total: {$sum: "$amount"}}},
+  {$sort: {total: -1}}
+]);
+
+// Indexes
+db.users.createIndex({email: 1});
+db.users.createIndex({location: "2dsphere"});</div>
+
+                    <h4>Redis</h4>
+                    <div class="code-block">SET key "value"
+GET key
+EXPIRE key 3600
+DEL key
+
+# Lists
+LPUSH mylist "item"
+RPOP mylist
+LRANGE mylist 0 -1
+
+# Sets
+SADD myset "member"
+SMEMBERS myset
+
+# Sorted Sets
+ZADD leaderboard 100 "user1"
+ZRANGE leaderboard 0 9 WITHSCORES
+
+# Hashes
+HSET user:1 name "John"
+HGET user:1 name
+HGETALL user:1
+
+# Pub/Sub
+PUBLISH channel "message"
+SUBSCRIBE channel</div>
+
+                    <h3>9.3 Database Replication</h3>
+                    <h4>Replication Types</h4>
+                    <ul>
+                        <li><strong>Master-Slave:</strong> One write, multiple reads</li>
+                        <li><strong>Master-Master:</strong> Multiple writers</li>
+                        <li><strong>Synchronous:</strong> Wait for replica confirmation</li>
+                        <li><strong>Asynchronous:</strong> Don't wait for replicas</li>
+                    </ul>
+
+                    <h3>9.4 Database Sharding</h3>
+                    <h4>Sharding Strategies</h4>
+                    <ul>
+                        <li><strong>Range-based:</strong> Shard by key ranges</li>
+                        <li><strong>Hash-based:</strong> Hash the key</li>
+                        <li><strong>Geographic:</strong> Shard by location</li>
+                        <li><strong>Directory-based:</strong> Lookup table</li>
+                    </ul>
+
+                    <h3>9.5 Database Performance</h3>
+                    <h4>Optimization Techniques</h4>
+                    <ul>
+                        <li>Add appropriate indexes</li>
+                        <li>Use connection pooling</li>
+                        <li>Optimize queries (avoid N+1)</li>
+                        <li>Use caching (Redis, Memcached)</li>
+                        <li>Partition large tables</li>
+                        <li>Archive old data</li>
+                        <li>Use read replicas</li>
+                        <li>Implement query timeout</li>
+                    </ul>
+
+                    <h3>9.6 Database Backup & Recovery</h3>
+                    <h4>Backup Types</h4>
+                    <ul>
+                        <li><strong>Full Backup:</strong> Complete database copy</li>
+                        <li><strong>Incremental:</strong> Changes since last backup</li>
+                        <li><strong>Differential:</strong> Changes since last full backup</li>
+                        <li><strong>Point-in-Time:</strong> Restore to specific timestamp</li>
+                    </ul>
+
+                    <h4>Best Practices</h4>
+                    <ul>
+                        <li>Automate backup process</li>
+                        <li>Test restore procedures</li>
+                        <li>Store backups off-site</li>
+                        <li>Encrypt sensitive backups</li>
+                        <li>Monitor backup success</li>
+                        <li>Define RPO and RTO</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chapter 10: Security & Compliance -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 10: Security, Compliance & Best Practices</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>10.1 Authentication & Authorization</h3>
+                    <h4>Authentication Methods</h4>
+                    <ul>
+                        <li><strong>Basic Auth:</strong> Username/password in header</li>
+                        <li><strong>OAuth 2.0:</strong> Token-based delegation</li>
+                        <li><strong>JWT:</strong> JSON Web Tokens</li>
+                        <li><strong>SAML:</strong> Enterprise SSO</li>
+                        <li><strong>OpenID Connect:</strong> Identity layer on OAuth</li>
+                        <li><strong>API Keys:</strong> Service authentication</li>
+                        <li><strong>MFA:</strong> Multi-factor authentication</li>
+                    </ul>
+
+                    <h4>Authorization Models</h4>
+                    <ul>
+                        <li><strong>RBAC:</strong> Role-Based Access Control</li>
+                        <li><strong>ABAC:</strong> Attribute-Based Access Control</li>
+                        <li><strong>ACL:</strong> Access Control Lists</li>
+                        <li><strong>Policy-Based:</strong> Central policy engine</li>
+                    </ul>
+
+                    <h3>10.2 Encryption</h3>
+                    <h4>Encryption Types</h4>
+                    <ul>
+                        <li><strong>At Rest:</strong> Encrypted storage (AES-256)</li>
+                        <li><strong>In Transit:</strong> TLS/SSL</li>
+                        <li><strong>End-to-End:</strong> Client to client</li>
+                    </ul>
+
+                    <h4>Key Management</h4>
+                    <ul>
+                        <li>AWS KMS</li>
+                        <li>Google Cloud KMS</li>
+                        <li>Azure Key Vault</li>
+                        <li>HashiCorp Vault</li>
+                    </ul>
+
+                    <h3>10.3 Network Security</h3>
+                    <h4>Firewall Rules</h4>
+                    <div class="code-block"># iptables
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -j DROP
+
+# UFW
+ufw allow 22/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw enable</div>
+
+                    <h4>Security Groups (AWS)</h4>
+                    <ul>
+                        <li>Inbound rules: Control incoming traffic</li>
+                        <li>Outbound rules: Control outgoing traffic</li>
+                        <li>Stateful: Return traffic auto-allowed</li>
+                    </ul>
+
+                    <h3>10.4 Secrets Management</h3>
+                    <h4>Best Practices</h4>
+                    <ul>
+                        <li>Never commit secrets to git</li>
+                        <li>Use secrets management tools</li>
+                        <li>Rotate secrets regularly</li>
+                        <li>Use environment variables</li>
+                        <li>Encrypt secrets at rest</li>
+                        <li>Audit secret access</li>
+                        <li>Implement least privilege</li>
+                    </ul>
+
+                    <h4>Tools</h4>
+                    <ul>
+                        <li>HashiCorp Vault</li>
+                        <li>AWS Secrets Manager</li>
+                        <li>Azure Key Vault</li>
+                        <li>GCP Secret Manager</li>
+                        <li>Kubernetes Secrets</li>
+                    </ul>
+
+                    <h3>10.5 Security Scanning</h3>
+                    <h4>Vulnerability Scanning</h4>
+                    <ul>
+                        <li><strong>SAST:</strong> Static Application Security Testing</li>
+                        <li><strong>DAST:</strong> Dynamic Application Security Testing</li>
+                        <li><strong>SCA:</strong> Software Composition Analysis</li>
+                        <li><strong>Container Scanning:</strong> Image vulnerabilities</li>
+                    </ul>
+
+                    <h4>Tools</h4>
+                    <ul>
+                        <li>Snyk</li>
+                        <li>Trivy</li>
+                        <li>Clair</li>
+                        <li>SonarQube</li>
+                        <li>OWASP Dependency Check</li>
+                    </ul>
+
+                    <h3>10.6 Compliance</h3>
+                    <h4>Common Standards</h4>
+                    <ul>
+                        <li><strong>SOC 2:</strong> Service organization controls</li>
+                        <li><strong>ISO 27001:</strong> Information security</li>
+                        <li><strong>PCI DSS:</strong> Payment card security</li>
+                        <li><strong>HIPAA:</strong> Healthcare data</li>
+                        <li><strong>GDPR:</strong> EU data protection</li>
+                        <li><strong>FedRAMP:</strong> US government cloud</li>
+                    </ul>
+
+                    <h3>10.7 Security Best Practices</h3>
+                    <ul>
+                        <li>Implement defense in depth</li>
+                        <li>Follow principle of least privilege</li>
+                        <li>Enable audit logging</li>
+                        <li>Keep systems patched</li>
+                        <li>Use WAF (Web Application Firewall)</li>
+                        <li>Implement rate limiting</li>
+                        <li>Perform security reviews</li>
+                        <li>Conduct penetration testing</li>
+                        <li>Have incident response plan</li>
+                    </ul>
+
+                    <h3>10.8 OWASP Top 10</h3>
+                    <ol>
+                        <li>Broken Access Control</li>
+                        <li>Cryptographic Failures</li>
+                        <li>Injection</li>
+                        <li>Insecure Design</li>
+                        <li>Security Misconfiguration</li>
+                        <li>Vulnerable Components</li>
+                        <li>Authentication Failures</li>
+                        <li>Software & Data Integrity Failures</li>
+                        <li>Logging & Monitoring Failures</li>
+                        <li>Server-Side Request Forgery</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Chapter 11: System Design -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 11: System Design & Architecture</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>11.1 Scalability Patterns</h3>
+                    <h4>Horizontal vs Vertical Scaling</h4>
+                    <ul>
+                        <li><strong>Horizontal:</strong> Add more machines (scale out)</li>
+                        <li><strong>Vertical:</strong> Add more power (scale up)</li>
+                    </ul>
+
+                    <h4>Stateless vs Stateful</h4>
+                    <ul>
+                        <li><strong>Stateless:</strong> No session data, easy to scale</li>
+                        <li><strong>Stateful:</strong> Session data, sticky sessions needed</li>
+                    </ul>
+
+                    <h3>11.2 Caching Strategies</h3>
+                    <h4>Cache Patterns</h4>
+                    <ul>
+                        <li><strong>Cache-Aside:</strong> App manages cache</li>
+                        <li><strong>Read-Through:</strong> Cache loads on miss</li>
+                        <li><strong>Write-Through:</strong> Write to cache and DB</li>
+                        <li><strong>Write-Behind:</strong> Async write to DB</li>
+                        <li><strong>Refresh-Ahead:</strong> Proactive refresh</li>
+                    </ul>
+
+                    <h4>Cache Eviction Policies</h4>
+                    <ul>
+                        <li><strong>LRU:</strong> Least Recently Used</li>
+                        <li><strong>LFU:</strong> Least Frequently Used</li>
+                        <li><strong>FIFO:</strong> First In First Out</li>
+                        <li><strong>TTL:</strong> Time To Live</li>
+                    </ul>
+
+                    <h3>11.3 Message Queues</h3>
+                    <h4>Queue Types</h4>
+                    <ul>
+                        <li><strong>Point-to-Point:</strong> One consumer per message</li>
+                        <li><strong>Pub/Sub:</strong> Multiple subscribers</li>
+                        <li><strong>Priority Queue:</strong> Ordered by priority</li>
+                        <li><strong>Dead Letter Queue:</strong> Failed messages</li>
+                    </ul>
+
+                    <h4>Message Queue Systems</h4>
+                    <ul>
+                        <li>RabbitMQ</li>
+                        <li>Apache Kafka</li>
+                        <li>AWS SQS/SNS</li>
+                        <li>Google Pub/Sub</li>
+                        <li>Azure Service Bus</li>
+                        <li>Redis Streams</li>
+                    </ul>
+
+                    <h3>11.4 Microservices Architecture</h3>
+                    <h4>Characteristics</h4>
+                    <ul>
+                        <li>Independently deployable</li>
+                        <li>Organized around business capabilities</li>
+                        <li>Own their data</li>
+                        <li>Decentralized governance</li>
+                        <li>Infrastructure automation</li>
+                        <li>Design for failure</li>
+                    </ul>
+
+                    <h4>Communication Patterns</h4>
+                    <ul>
+                        <li><strong>Synchronous:</strong> REST, gRPC</li>
+                        <li><strong>Asynchronous:</strong> Message queues, events</li>
+                        <li><strong>Service Mesh:</strong> Istio, Linkerd</li>
+                    </ul>
+
+                    <h3>11.5 CAP Theorem</h3>
+                    <ul>
+                        <li><strong>Consistency:</strong> All nodes see same data</li>
+                        <li><strong>Availability:</strong> Every request gets response</li>
+                        <li><strong>Partition Tolerance:</strong> System works despite network partitions</li>
+                    </ul>
+                    <p><strong>Reality:</strong> Can only guarantee 2 of 3</p>
+
+                    <h3>11.6 Database Design Patterns</h3>
+                    <h4>Data Partitioning</h4>
+                    <ul>
+                        <li><strong>Horizontal (Sharding):</strong> Split rows</li>
+                        <li><strong>Vertical:</strong> Split columns</li>
+                        <li><strong>Functional:</strong> By service/feature</li>
+                    </ul>
+
+                    <h4>Replication Patterns</h4>
+                    <ul>
+                        <li><strong>Leader-Follower:</strong> Single write master</li>
+                        <li><strong>Multi-Leader:</strong> Multiple write masters</li>
+                        <li><strong>Leaderless:</strong> All nodes equal (Cassandra)</li>
+                    </ul>
+
+                    <h3>11.7 API Design</h3>
+                    <h4>REST Best Practices</h4>
+                    <ul>
+                        <li>Use nouns for resources, not verbs</li>
+                        <li>Use HTTP methods correctly</li>
+                        <li>Use proper status codes</li>
+                        <li>Version your API</li>
+                        <li>Support pagination</li>
+                        <li>Implement rate limiting</li>
+                        <li>Document with OpenAPI/Swagger</li>
+                    </ul>
+
+                    <h4>GraphQL</h4>
+                    <div class="code-block">query {
+  user(id: "123") {
+    name
+    email
+    posts {
+      title
+      comments {
+        text
+        author
+      }
+    }
+  }
+}</div>
+
+                    <h4>gRPC</h4>
+                    <ul>
+                        <li>Protocol Buffers (protobuf)</li>
+                        <li>HTTP/2 based</li>
+                        <li>Bi-directional streaming</li>
+                        <li>Language agnostic</li>
+                        <li>High performance</li>
+                    </ul>
+
+                    <h3>11.8 Distributed Systems Concepts</h3>
+                    <h4>Consensus Algorithms</h4>
+                    <ul>
+                        <li><strong>Paxos:</strong> Classic consensus</li>
+                        <li><strong>Raft:</strong> Understandable consensus</li>
+                        <li><strong>ZAB:</strong> Zookeeper Atomic Broadcast</li>
+                    </ul>
+
+                    <h4>Distributed Locks</h4>
+                    <ul>
+                        <li>Redis SETNX</li>
+                        <li>Zookeeper</li>
+                        <li>etcd</li>
+                        <li>Consul</li>
+                    </ul>
+
+                    <h3>11.9 High Availability Patterns</h3>
+                    <ul>
+                        <li><strong>Active-Active:</strong> Multiple active instances</li>
+                        <li><strong>Active-Passive:</strong> Standby failover</li>
+                        <li><strong>Multi-Region:</strong> Geographic distribution</li>
+                        <li><strong>Circuit Breaker:</strong> Prevent cascade failures</li>
+                        <li><strong>Bulkhead:</strong> Isolate critical resources</li>
+                        <li><strong>Health Checks:</strong> Monitor instance health</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chapter 12: Performance & Optimization -->
+            <div class="chapter">
+                <h2 onclick="toggleChapter(this)">
+                    <span>Chapter 12: Performance Tuning & Optimization</span>
+                    <span class="collapse-indicator">▼</span>
+                </h2>
+                <div class="chapter-content">
+                    <h3>12.1 Performance Testing</h3>
+                    <h4>Testing Types</h4>
+                    <ul>
+                        <li><strong>Load Testing:</strong> Expected load</li>
+                        <li><strong>Stress Testing:</strong> Beyond normal load</li>
+                        <li><strong>Spike Testing:</strong> Sudden load increase</li>
+                        <li><strong>Endurance Testing:</strong> Extended duration</li>
+                        <li><strong>Scalability Testing:</strong> Growth capacity</li>
+                    </ul>
+
+                    <h4>Tools</h4>
+                    <ul>
+                        <li>Apache JMeter</li>
+                        <li>Gatling</li>
+                        <li>K6</li>
+                        <li>Locust</li>
+                        <li>Artillery</li>
+                    </ul>
+
+                    <h3>12.2 Linux Performance Tuning</h3>
+                    <h4>CPU Optimization</h4>
+                    <div class="code-block"># Check CPU usage
+top
+mpstat -P ALL 1
+
+# Process priority
+nice -n -10 command
+renice -n 5 -p PID
+
+# CPU affinity
+taskset -c 0,1 command</div>
+
+                    <h4>Memory Optimization</h4>
+                    <div class="code-block"># Memory info
+free -h
+vmstat 1
+cat /proc/meminfo
+
+# Clear cache
+sync; echo 3 > /proc/sys/vm/drop_caches
+
+# Swap
+swapon -s
+swapoff -a</div>
+
+                    <h4>Disk I/O</h4>
+                    <div class="code-block"># I/O stats
+iostat -x 1
+iotop
+
+# Disk usage
+df -h
+du -sh /*
+
+# Check disk health
+smartctl -a /dev/sda</div>
+
+                    <h3>12.3 Network Performance</h3>
+                    <div class="code-block"># Network throughput
+iperf3 -s  # Server
+iperf3 -c server  # Client
+
+# Bandwidth monitoring
+iftop
+nload
+
+# TCP tuning
+sysctl -w net.ipv4.tcp_window_scaling=1
+sysctl -w net.core.rmem_max=16777216</div>
+
+                    <h3>12.4 Web Performance</h3>
+                    <h4>Optimization Techniques</h4>
+                    <ul>
+                        <li><strong>CDN:</strong> Content delivery network</li>
+                        <li><strong>Compression:</strong> Gzip, Brotli</li>
+                        <li><strong>Minification:</strong> CSS, JS minification</li>
+                        <li><strong>Image Optimization:</strong> WebP, lazy loading</li>
+                        <li><strong>HTTP/2:</strong> Multiplexing, server push</li>
+                        <li><strong>Caching:</strong> Browser, CDN, app cache</li>
+                        <li><strong>Async Loading:</strong> Defer non-critical JS</li>
+                    </ul>
+
+                    <h3>12.5 Database Performance</h3>
+                    <h4>Query Optimization</h4>
+                    <ul>
+                        <li>Use EXPLAIN to analyze queries</li>
+                        <li>Add appropriate indexes</li>
+                        <li>Avoid SELECT *</li>
+                        <li>Use connection pooling</li>
+                        <li>Implement query caching</li>
+                        <li>Optimize JOIN operations</li>
+                        <li>Partition large tables</li>
+                    </ul>
+
+                    <h3>12.6 Application Performance</h3>
+                    <h4>Best Practices</h4>
+                    <ul>
+                        <li>Use async/await for I/O</li>
+                        <li>Implement connection pooling</li>
+                        <li>Cache frequently accessed data</li>
+                        <li>Use CDN for static assets</li>
+                        <li>Optimize algorithms and data structures</li>
+                        <li>Profile and identify bottlenecks</li>
+                        <li>Use efficient serialization</li>
+                        <li>Implement pagination</li>
+                    </ul>
+
+                    <h3>12.7 Profiling Tools</h3>
+                    <ul>
+                        <li><strong>Node.js:</strong> node --prof, clinic.js</li>
+                        <li><strong>Python:</strong> cProfile, py-spy</li>
+                        <li><strong>Java:</strong> JProfiler, YourKit</li>
+                        <li><strong>Go:</strong> pprof</li>
+                        <li><strong>Linux:</strong> perf, strace, ltrace</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Quiz Section -->
+        <div id="quiz" class="content-section">
+            <div class="quiz-container">
+                <h2>🎯 SRE & DevOps Quiz</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quizProgress" style="width: 0%"></div>
+                </div>
+                <div id="quizContent"></div>
+                <div class="quiz-score" id="quizScore" style="display:none"></div>
+            </div>
+        </div>
+
+        <!-- Flashcards Section -->
+        <div id="flashcards" class="content-section">
+            <h2>🎴 Interactive Flashcards</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">Click on any card to flip and reveal the answer</p>
+            <div class="flashcard-container" id="flashcardContainer"></div>
+        </div>
+
+        <!-- All Topics Section -->
+        <div id="topics" class="content-section">
+            <h2>📋 Complete Topic List (1000+ Concepts)</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">Master these topics to ace your SRE/DevOps interview</p>
+            <div class="topic-grid" id="topicGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabName) {
+            const sections = document.querySelectorAll('.content-section');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Chapter Toggle
+        function toggleChapter(element) {
+            element.parentElement.classList.toggle('collapsed');
+        }
+
+        // Search Functionality
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const chapters = document.querySelectorAll('.chapter');
+            
+            chapters.forEach(chapter => {
+                const text = chapter.textContent.toLowerCase();
+                if (text.includes(searchTerm) || searchTerm === '') {
+                    chapter.style.display = 'block';
+                } else {
+                    chapter.style.display = 'none';
+                }
+            });
+        });
+
+        // Quiz Data
+        const quizQuestions = [
+            {
+                question: "What does SLO stand for in SRE?",
+                options: [
+                    "Service Level Objective",
+                    "System Level Operations",
+                    "Standard Linux Operations",
+                    "Service Load Optimization"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which command shows real-time process information in Linux?",
+                options: ["ps aux", "top", "ls -la", "netstat"],
+                correct: 1
+            },
+            {
+                question: "What is the default port for HTTPS?",
+                options: ["80", "8080", "443", "22"],
+                correct: 2
+            },
+            {
+                question: "Which HTTP status code indicates 'Not Found'?",
+                options: ["200", "301", "404", "500"],
+                correct: 2
+            },
+            {
+                question: "What does CAP in CAP Theorem stand for?",
+                options: [
+                    "Consistency, Availability, Partition tolerance",
+                    "Cache, API, Performance",
+                    "Container, Application, Platform",
+                    "Cloud, Automation, Provisioning"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which Kubernetes object manages pod replicas?",
+                options: ["Service", "Deployment", "ConfigMap", "Secret"],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of Docker volumes?",
+                options: [
+                    "Networking between containers",
+                    "Persistent data storage",
+                    "Image versioning",
+                    "Container security"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which tool is used for infrastructure as code?",
+                options: ["Jenkins", "Prometheus", "Terraform", "Grafana"],
+                correct: 2
+            },
+            {
+                question: "What does DNS stand for?",
+                options: [
+                    "Domain Name System",
+                    "Data Network Service",
+                    "Dynamic Name Server",
+                    "Distributed Naming System"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which metric type in Prometheus increases monotonically?",
+                options: ["Gauge", "Counter", "Histogram", "Summary"],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of a Circuit Breaker pattern?",
+                options: [
+                    "Load balancing",
+                    "Prevent cascading failures",
+                    "Data encryption",
+                    "Cache invalidation"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which command creates a Docker container and starts it?",
+                options: ["docker create", "docker start", "docker run", "docker exec"],
+                correct: 2
+            },
+            {
+                question: "What is the maximum availability percentage for 99.9% SLO per month?",
+                options: [
+                    "43.8 minutes downtime",
+                    "4.38 minutes downtime",
+                    "7.2 hours downtime",
+                    "30 seconds downtime"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which layer of OSI model handles HTTP?",
+                options: ["Layer 3", "Layer 4", "Layer 5", "Layer 7"],
+                correct: 3
+            },
+            {
+                question: "What does kubectl get pods -A display?",
+                options: [
+                    "Pods in default namespace",
+                    "Pods in all namespaces",
+                    "Available pod templates",
+                    "Pod API versions"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which database is document-oriented NoSQL?",
+                options: ["PostgreSQL", "Redis", "MongoDB", "MySQL"],
+                correct: 2
+            },
+            {
+                question: "What is the purpose of Load Balancer?",
+                options: [
+                    "Store data",
+                    "Distribute traffic across servers",
+                    "Monitor applications",
+                    "Encrypt data"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which Git command shows commit history?",
+                options: ["git status", "git log", "git diff", "git show"],
+                correct: 1
+            },
+            {
+                question: "What does IaC stand for?",
+                options: [
+                    "Internet as Code",
+                    "Infrastructure as Code",
+                    "Integration as Code",
+                    "Interface as Code"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which HTTP method is idempotent?",
+                options: ["POST", "GET", "PATCH", "All of the above"],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of Prometheus?",
+                options: [
+                    "Container orchestration",
+                    "Metrics monitoring and alerting",
+                    "CI/CD pipeline",
+                    "Log aggregation"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which command displays network connections?",
+                options: ["ps", "top", "netstat", "df"],
+                correct: 2
+            },
+            {
+                question: "What is the default Kubernetes service type?",
+                options: ["NodePort", "LoadBalancer", "ClusterIP", "ExternalName"],
+                correct: 2
+            },
+            {
+                question: "Which tool is used for container orchestration?",
+                options: ["Docker", "Kubernetes", "Git", "Ansible"],
+                correct: 1
+            },
+            {
+                question: "What does TLS stand for?",
+                options: [
+                    "Transport Layer Security",
+                    "Total Link Security",
+                    "Trusted Layer System",
+                    "Transfer Level Service"
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function loadQuiz() {
+            const quizContent = document.getElementById('quizContent');
+            if (currentQuestion >= quizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            quizContent.innerHTML = `
+                <div class="quiz-question">
+                    <h3>Question ${currentQuestion + 1} of ${quizQuestions.length}</h3>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">${q.question}</p>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, idx) => `
+                            <div class="quiz-option" onclick="selectOption(${idx})" data-index="${idx}">
+                                ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="quiz-btn" onclick="submitAnswer()">Submit Answer</button>
+                </div>
+            `;
+
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            userAnswers[currentQuestion] = index;
+        }
+
+        function submitAnswer() {
+            if (userAnswers[currentQuestion] === undefined) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options[q.correct].classList.add('correct');
+            if (userAnswers[currentQuestion] !== q.correct) {
+                options[userAnswers[currentQuestion]].classList.add('incorrect');
+            } else {
+                score++;
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuiz();
+            }, 1500);
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / quizQuestions.length) * 100;
+            document.getElementById('quizProgress').style.width = progress + '%';
+        }
+
+        function showQuizResults() {
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            const quizContent = document.getElementById('quizContent');
+            const quizScore = document.getElementById('quizScore');
+            
+            quizContent.innerHTML = '';
+            quizScore.style.display = 'block';
+            quizScore.innerHTML = `
+                <h2>Quiz Complete! 🎉</h2>
+                <p style="font-size: 2rem; margin: 1rem 0;">Score: ${score}/${quizQuestions.length}</p>
+                <p style="font-size: 1.5rem; color: ${percentage >= 70 ? 'var(--success-color)' : 'var(--error-color)'}">
+                    ${percentage}%
+                </p>
+                <p style="margin-top: 1rem;">
+                    ${percentage >= 90 ? '🌟 Excellent! You\'re ready for FAANG interviews!' :
+                      percentage >= 70 ? '👍 Good job! Review the topics you missed.' :
+                      '📚 Keep studying! Review the handbook and try again.'}
+                </p>
+                <button class="quiz-btn" onclick="resetQuiz()">Retake Quiz</button>
+            `;
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            document.getElementById('quizScore').style.display = 'none';
+            loadQuiz();
+        }
+
+        // Flashcards Data
+        const flashcards = [
+            { front: "What is Docker?", back: "Container platform for building, shipping, and running applications in isolated environments" },
+            { front: "What is Kubernetes?", back: "Open-source container orchestration platform for automating deployment, scaling, and management" },
+            { front: "What is CI/CD?", back: "Continuous Integration/Continuous Deployment - automated software delivery pipeline" },
+            { front: "What is a Load Balancer?", back: "Distributes network traffic across multiple servers to ensure availability and reliability" },
+            { front: "What is Terraform?", back: "Infrastructure as Code tool for provisioning and managing cloud resources" },
+            { front: "What is Ansible?", back: "Configuration management and automation tool using YAML playbooks" },
+            { front: "What is Prometheus?", back: "Open-source monitoring and alerting toolkit with time-series database" },
+            { front: "What is Grafana?", back: "Visualization and analytics platform for monitoring metrics" },
+            { front: "What is SLO?", back: "Service Level Objective - target reliability percentage for a service" },
+            { front: "What is Error Budget?", back: "Amount of unreliability allowed before freezing releases (100% - SLO)" },
+            { front: "What is Toil?", back: "Manual, repetitive, automatable work that scales linearly with service growth" },
+            { front: "What is CAP Theorem?", back: "In distributed systems, can only guarantee 2 of: Consistency, Availability, Partition tolerance" },
+            { front: "What is Circuit Breaker?", back: "Design pattern that prevents cascading failures by stopping requests to failing services" },
+            { front: "What is DNS?", back: "Domain Name System - translates domain names to IP addresses" },
+            { front: "What is TLS/SSL?", back: "Cryptographic protocols for secure communication over networks" },
+            { front: "What is YAML?", back: "Human-readable data serialization language used for config files" },
+            { front: "What is REST API?", back: "Representational State Transfer - architectural style for web services using HTTP" },
+            { front: "What is gRPC?", back: "High-performance RPC framework using Protocol Buffers and HTTP/2" },
+            { front: "What is Microservices?", back: "Architectural style where app is collection of loosely coupled, independently deployable services" },
+            { front: "What is Container?", back: "Lightweight, standalone package containing code and all dependencies to run an application" },
+            { front: "What is Pod in K8s?", back: "Smallest deployable unit in Kubernetes, containing one or more containers" },
+            { front: "What is Namespace?", back: "Virtual cluster within Kubernetes for resource isolation and organization" },
+            { front: "What is Helm?", back: "Package manager for Kubernetes applications using charts" },
+            { front: "What is Service Mesh?", back: "Infrastructure layer for handling service-to-service communication (e.g., Istio)" },
+            { front: "What is OAuth 2.0?", back: "Authorization framework for delegated access to resources" },
+            { front: "What is JWT?", back: "JSON Web Token - compact method for securely transmitting information between parties" },
+            { front: "What is RBAC?", back: "Role-Based Access Control - restricts access based on user roles" },
+            { front: "What is Blue-Green Deployment?", back: "Release strategy with two identical environments for zero-downtime deployments" },
+            { front: "What is Canary Deployment?", back: "Gradual rollout to subset of users to test changes before full release" },
+            { front: "What is Rolling Update?", back: "Gradually replacing instances with new version, maintaining availability" },
+            { front: "What is GitOps?", back: "Using Git as single source of truth for declarative infrastructure and applications" },
+            { front: "What is Observability?", back: "Ability to understand system internal state from external outputs (metrics, logs, traces)" },
+            { front: "What is APM?", back: "Application Performance Monitoring - tracking app performance and user experience" },
+            { front: "What is Distributed Tracing?", back: "Tracking requests across multiple microservices to identify bottlenecks" },
+            { front: "What is Log Aggregation?", back: "Collecting and centralizing logs from multiple sources (ELK, Splunk)" },
+            { front: "What is Chaos Engineering?", back: "Intentionally injecting failures to test system resilience" },
+            { front: "What is Incident Management?", back: "Structured approach to handling service disruptions and restoring normal operations" },
+            { front: "What is Postmortem?", back: "Blameless analysis after incident to learn and prevent recurrence" },
+            { front: "What is On-Call?", back: "Being available to respond to production incidents outside normal hours" },
+            { front: "What is Runbook?", back: "Documentation of operational procedures and troubleshooting steps" },
+            { front: "What is Auto-Scaling?", back: "Automatically adjusting resource capacity based on demand" },
+            { front: "What is Horizontal Scaling?", back: "Adding more machines/instances to handle increased load" },
+            { front: "What is Vertical Scaling?", back: "Increasing resources (CPU, RAM) of existing machines" },
+            { front: "What is Caching?", back: "Storing frequently accessed data in fast-access layer to improve performance" },
+            { front: "What is CDN?", back: "Content Delivery Network - distributed servers delivering content based on geographic location" },
+            { front: "What is Message Queue?", back: "Asynchronous communication pattern using queues (RabbitMQ, Kafka)" },
+            { front: "What is Pub/Sub?", back: "Publish/Subscribe messaging pattern where publishers send to topics, subscribers receive" },
+            { front: "What is Sharding?", back: "Horizontal partitioning of database across multiple servers" },
+            { front: "What is Replication?", back: "Copying data across multiple database servers for redundancy and availability" },
+            { front: "What is ACID?", back: "Atomicity, Consistency, Isolation, Durability - database transaction properties" },
+            { front: "What is BASE?", back: "Basically Available, Soft state, Eventually consistent - NoSQL database properties" },
+            { front: "What is NoSQL?", back: "Non-relational databases (MongoDB, Cassandra, Redis) for flexible schema" },
+            { front: "What is ORM?", back: "Object-Relational Mapping - converts between incompatible type systems" },
+            { front: "What is API Gateway?", back: "Entry point for API requests, handling routing, auth, rate limiting" },
+            { front: "What is Reverse Proxy?", back: "Server that sits between clients and backend servers (Nginx, HAProxy)" },
+            { front: "What is VPC?", back: "Virtual Private Cloud - isolated network within cloud provider" },
+            { front: "What is Subnet?", back: "Logical subdivision of IP network for better organization and security" },
+            { front: "What is Firewall?", back: "Network security system monitoring and controlling incoming/outgoing traffic" },
+            { front: "What is VPN?", back: "Virtual Private Network - encrypted connection over public network" },
+            { front: "What is SSH?", back: "Secure Shell - cryptographic network protocol for secure remote access" },
+            { front: "What is TLS Handshake?", back: "Process establishing secure connection between client and server" },
+            { front: "What is Certificate Authority?", back: "Entity that issues digital certificates for secure communications" },
+            { front: "What is Encryption at Rest?", back: "Encrypting data stored on disk" },
+            { front: "What is Encryption in Transit?", back: "Encrypting data while being transmitted over network" },
+            { front: "What is Zero Trust?", back: "Security model assuming no implicit trust, verifying every access request" },
+            { front: "What is Defense in Depth?", back: "Layered security approach with multiple defensive measures" },
+            { front: "What is Least Privilege?", back: "Granting minimum permissions necessary to perform job function" },
+            { front: "What is WAF?", back: "Web Application Firewall - protects web apps from attacks" },
+            { front: "What is DDoS?", back: "Distributed Denial of Service - overwhelming service with traffic" },
+            { front: "What is Rate Limiting?", back: "Controlling number of requests user can make in time period" },
+            { front: "What is Secrets Management?", back: "Securely storing and managing sensitive credentials and keys" },
+            { front: "What is Vulnerability Scanning?", back: "Automated process identifying security weaknesses" },
+            { front: "What is Penetration Testing?", back: "Simulated cyberattack to identify exploitable vulnerabilities" },
+            { front: "What is Compliance?", back: "Adhering to regulatory and industry standards (SOC2, ISO 27001)" },
+            { front: "What is GDPR?", back: "General Data Protection Regulation - EU data privacy law" },
+            { front: "What is SOC 2?", back: "Audit report on service organization's security controls" },
+            { front: "What is PCI DSS?", back: "Payment Card Industry Data Security Standard" },
+            { front: "What is Container Image?", back: "Lightweight, standalone package with code and dependencies" },
+            { front: "What is Docker Hub?", back: "Cloud-based registry for Docker images" },
+            { front: "What is Dockerfile?", back: "Text file with instructions to build Docker image" },
+            { front: "What is Docker Compose?", back: "Tool for defining and running multi-container applications" },
+            { front: "What is Kubernetes Deployment?", back: "Declarative updates for Pods and ReplicaSets" },
+            { front: "What is Kubernetes Service?", back: "Abstraction exposing pods as network service" },
+            { front: "What is ConfigMap?", back: "Kubernetes object storing non-confidential config data" },
+            { front: "What is Secret in K8s?", back: "Kubernetes object storing sensitive information" },
+            { front: "What is Ingress?", back: "API object managing external HTTP/HTTPS access to services" },
+            { front: "What is StatefulSet?", back: "Kubernetes workload for stateful applications with stable identities" },
+            { front: "What is DaemonSet?", back: "Ensures all nodes run copy of a pod" },
+            { front: "What is Job in K8s?", back: "Creates pods to complete specific task then terminate" },
+            { front: "What is CronJob?", back: "Schedules jobs to run at specific times" },
+            { front: "What is HPA?", back: "Horizontal Pod Autoscaler - automatically scales pods based on metrics" },
+            { front: "What is PVC?", back: "PersistentVolumeClaim - request for storage by user" },
+            { front: "What is StorageClass?", back: "Describes 'classes' of storage with different properties" },
+            { front: "What is etcd?", back: "Distributed key-value store used by Kubernetes" },
+            { front: "What is kubelet?", back: "Node agent ensuring containers running in pods" },
+            { front: "What is kube-proxy?", back: "Network proxy running on each node in cluster" }
+        ];
+
+        function loadFlashcards() {
+            const container = document.getElementById('flashcardContainer');
+            container.innerHTML = flashcards.map((card, idx) => `
+                <div class="flashcard" onclick="flipCard(${idx})">
+                    <div class="flashcard-inner" id="card-${idx}">
+                        <div class="flashcard-front">
+                            ${card.front}
+                        </div>
+                        <div class="flashcard-back">
+                            ${card.back}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipCard(index) {
+            const card = document.getElementById(`card-${index}`).parentElement;
+            card.classList.toggle('flipped');
+        }
+
+        // All Topics List (1000+ topics)
+        const allTopics = [
+            // Linux & Command Line (100+ topics)
+            "ls command", "cd command", "pwd command", "mkdir command", "rm command",
+            "cp command", "mv command", "touch command", "cat command", "less command",
+            "head command", "tail command", "grep command", "find command", "chmod command",
+            "chown command", "ps command", "top command", "kill command", "systemctl command",
+            "journalctl command", "df command", "du command", "free command", "uptime command",
+            "ssh command", "scp command", "rsync command", "tar command", "gzip command",
+            "curl command", "wget command", "netstat command", "ss command", "iptables",
+            "ufw firewall", "sed command", "awk command", "cut command", "sort command",
+            "uniq command", "wc command", "diff command", "patch command", "vim editor",
+            "nano editor", "cron jobs", "crontab", "bash scripting", "shell variables",
+            "environment variables", "PATH variable", "pipes and redirection", "stdin/stdout/stderr",
+            "process management", "background processes", "foreground processes", "job control",
+            "file permissions", "symbolic links", "hard links", "inode", "filesystem hierarchy",
+            "/etc directory", "/var directory", "/tmp directory", "/proc filesystem", "/sys filesystem",
+            "systemd", "init systems", "runlevels", "service management", "daemon processes",
+            "package managers", "apt", "yum", "dnf", "rpm", "dpkg",
+            "software repositories", "kernel modules", "lsmod", "modprobe", "dmesg",
+            "system logs", "/var/log", "syslog", "logrotate", "user management",
+            "group management", "sudo", "su command", "passwd", "shadow file",
+            "SSH keys", "authorized_keys", "known_hosts", "SSH config", "SSH tunneling",
+            
+            // Networking (100+ topics)
+            "TCP protocol", "UDP protocol", "IP addressing", "IPv4", "IPv6",
+            "Subnetting", "CIDR notation", "NAT", "Port forwarding", "DNS",
+            "DNS records", "A record", "AAAA record", "CNAME", "MX record",
+            "TXT record", "SOA record", "NS record", "PTR record", "DNS caching",
+            "DNS TTL", "HTTP protocol", "HTTPS", "HTTP/2", "HTTP/3",
+            "HTTP methods", "GET request", "POST request", "PUT request", "DELETE request",
+            "HTTP headers", "HTTP status codes", "200 OK", "301 redirect", "404 not found",
+            "500 error", "TLS/SSL", "TLS handshake", "Certificates", "Certificate Authority",
+            "Let's Encrypt", "SSL certificate", "mTLS", "CORS", "Same-origin policy",
+            "Load balancing", "Round robin", "Least connections", "IP hash", "Layer 4 LB",
+            "Layer 7 LB", "HAProxy", "Nginx", "Apache", "Reverse proxy",
+            "Forward proxy", "API Gateway", "Rate limiting", "Circuit breaker", "Retry logic",
+            "Timeout handling", "Connection pooling", "Keep-alive", "WebSockets", "gRPC",
+            "REST API", "GraphQL", "SOAP", "RPC", "Message queues",
+            "TCP handshake", "TCP window", "TCP congestion control", "UDP broadcasting", "Multicast",
+            "VPN", "VPC", "Security groups", "Network ACL", "Firewall rules",
+            "DDoS protection", "CDN", "Edge computing", "Anycast", "BGP protocol",
+            "OSPF", "Routing tables", "Gateway", "Network interface", "Bond/Team interfaces",
+            "VLAN", "Network bridge", "Network namespace", "iptables rules", "nftables",
+            "Packet filtering", "Stateful firewall", "Port scanning", "nmap", "tcpdump",
+            "Wireshark", "Network monitoring", "Bandwidth monitoring", "Latency", "Jitter",
+            
+            // Docker (80+ topics)
+            "Docker architecture", "Docker daemon", "Docker client", "Docker registry", "Docker Hub",
+            "Container vs VM", "Docker images", "Docker layers", "Image caching", "Dockerfile",
+            "FROM instruction", "RUN instruction", "COPY instruction", "ADD instruction", "CMD instruction",
+            "ENTRYPOINT", "EXPOSE instruction", "ENV instruction", "WORKDIR", "USER instruction",
+            "Multi-stage builds", "Docker build context", ".dockerignore", "Docker tags", "Image versioning",
+            "docker run", "docker ps", "docker logs", "docker exec", "docker stop",
+            "docker rm", "docker rmi", "docker pull", "docker push", "docker commit",
+            "Docker volumes", "Volume mounting", "Bind mounts", "tmpfs mounts", "Volume drivers",
+            "Docker networks", "Bridge network", "Host network", "Overlay network", "Macvlan network",
+            "Network isolation", "Container linking", "Docker Compose", "docker-compose.yml", "Compose services",
+            "Compose depends_on", "Compose environment", "Compose volumes", "Compose networks", "docker-compose up",
+            "docker-compose down", "Container orchestration", "Docker Swarm", "Swarm nodes", "Swarm services",
+            "Container security", "Image scanning", "Vulnerability scanning", "Rootless containers", "Container namespaces",
+            "cgroups", "Capabilities", "Seccomp", "AppArmor", "SELinux",
+            "Resource limits", "Memory limits", "CPU limits", "Health checks", "Container restart policies",
+            "Docker stats", "Container monitoring", "Docker events", "Container logs rotation", "Logging drivers",
+            
+            // Kubernetes (120+ topics)
+            "Kubernetes architecture", "Control plane", "Worker nodes", "kube-apiserver", "etcd",
+            "kube-scheduler", "kube-controller-manager", "kubelet", "kube-proxy", "Container runtime",
+            "Pods", "ReplicaSets", "Deployments", "StatefulSets", "DaemonSets",
+            "Jobs", "CronJobs", "Services", "ClusterIP", "NodePort",
+            "LoadBalancer", "ExternalName", "Ingress", "Ingress controller", "Nginx Ingress",
+            "ConfigMaps", "Secrets", "Volumes", "PersistentVolumes", "PersistentVolumeClaims",
+            "StorageClass", "VolumeSnapshots", "Namespaces", "Labels", "Selectors",
+            "Annotations", "Resource quotas", "Limit ranges", "Pod security policies", "Network policies",
+            "RBAC", "ServiceAccounts", "Roles", "ClusterRoles", "RoleBindings",
+            "kubectl", "kubectl apply", "kubectl get", "kubectl describe", "kubectl logs",
+            "kubectl exec", "kubectl port-forward", "kubectl scale", "kubectl rollout", "kubectl delete",
+            "Helm", "Helm charts", "Helm values", "Helm releases", "Helm repositories",
+            "Operators", "Custom Resource Definitions", "Custom controllers", "Admission controllers", "Webhooks",
+            "Init containers", "Sidecar containers", "Pod affinity", "Node affinity", "Taints and tolerations",
+            "Node selectors", "Pod priority", "Preemption", "Horizontal Pod Autoscaler", "Vertical Pod Autoscaler",
+            "Cluster Autoscaler", "Pod Disruption Budgets", "Liveness probes", "Readiness probes", "Startup probes",
+            "Container lifecycle hooks", "Resource requests", "Resource limits", "QoS classes", "Ephemeral containers",
+            "Service mesh", "Istio", "Linkerd", "Consul", "Envoy proxy",
+            "mTLS in K8s", "Certificate management", "cert-manager", "DNS in Kubernetes", "CoreDNS",
+            "Kubernetes dashboard", "Metrics server", "Prometheus operator", "Grafana in K8s", "Logging in K8s",
+            "Fluentd", "Elasticsearch operator", "Backup strategies", "Velero", "Disaster recovery",
+            
+            // Cloud Platforms (100+ topics)
+            "AWS EC2", "AWS S3", "AWS RDS", "AWS Lambda", "AWS ECS",
+            "AWS EKS", "AWS VPC", "AWS Route53", "AWS CloudFront", "AWS IAM",
+            "AWS CloudWatch", "AWS CloudFormation", "AWS Elastic Beanstalk", "AWS DynamoDB", "AWS ElastiCache",
+            "AWS SQS", "AWS SNS", "AWS API Gateway", "AWS Cognito", "AWS Secrets Manager",
+            "AWS KMS", "AWS Auto Scaling", "AWS ELB", "ALB", "NLB",
+            "AWS Security Groups", "AWS NACLs", "AWS VPN", "AWS Direct Connect", "AWS Transit Gateway",
+            "GCP Compute Engine", "GCP Cloud Storage", "GCP Cloud SQL", "GCP Cloud Functions", "GCP Cloud Run",
+            "GKE", "GCP VPC", "GCP Cloud DNS", "GCP Cloud CDN", "GCP IAM",
+            "GCP Cloud Monitoring", "GCP Deployment Manager", "GCP App Engine", "GCP Firestore", "GCP Memorystore",
+            "GCP Pub/Sub", "GCP Cloud Tasks", "GCP Apigee", "GCP Cloud Armor", "GCP Secret Manager",
+            "Azure VMs", "Azure Blob Storage", "Azure SQL Database", "Azure Functions", "Azure Container Instances",
+            "AKS", "Azure Virtual Network", "Azure DNS", "Azure CDN", "Azure AD",
+            "Azure Monitor", "Azure Resource Manager", "Azure App Service", "Azure Cosmos DB", "Azure Cache for Redis",
+            "Azure Service Bus", "Azure Event Grid", "Azure API Management", "Azure Firewall", "Azure Key Vault",
+            "Multi-cloud strategy", "Cloud migration", "Cloud cost optimization", "Reserved instances", "Spot instances",
+            "Cloud security", "Cloud compliance", "Cloud backup", "Cloud disaster recovery", "Hybrid cloud",
+            
+            // CI/CD (80+ topics)
+            "Continuous Integration", "Continuous Deployment", "Continuous Delivery", "Build automation", "Test automation",
+            "Jenkins", "Jenkinsfile", "Pipeline as code", "Declarative pipeline", "Scripted pipeline",
+            "Jenkins agents", "Jenkins plugins", "Blue Ocean", "GitHub Actions", "GitHub workflows",
+            "GitHub Actions runners", "Actions marketplace", "GitLab CI/CD", ".gitlab-ci.yml", "GitLab runners",
+            "CircleCI", "Travis CI", "Azure DevOps", "Bamboo", "TeamCity",
+            "Build stages", "Test stages", "Deploy stages", "Artifact management", "Nexus",
+            "Artifactory", "Docker registry", "NPM registry", "Maven repository", "PyPI",
+            "Version control", "Git", "Git branching", "Git merging", "Git rebasing",
+            "Git tags", "Git hooks", "GitFlow", "GitHub Flow", "Trunk-based development",
+            "Pull requests", "Code review", "Branch protection", "Semantic versioning", "Release management",
+            "Blue-green deployment", "Canary deployment", "Rolling deployment", "A/B testing", "Feature flags",
+            "Infrastructure as Code", "Terraform", "Terraform state", "Terraform modules", "Terraform providers",
+            "Ansible", "Ansible playbooks", "Ansible roles", "Ansible inventory", "Ansible vault",
+            "Puppet", "Chef", "SaltStack", "CloudFormation", "ARM templates",
+            "Configuration management", "Secret injection", "Environment variables", "Build caching", "Parallel execution",
+            "Pipeline optimization", "Deployment strategies", "Rollback procedures", "Zero-downtime deployment", "Database migrations",
+            
+            // Monitoring & Observability (100+ topics)
+            "Monitoring", "Observability", "Metrics", "Logs", "Traces",
+            "Prometheus", "PromQL", "Prometheus exporters", "Prometheus federation", "Prometheus operators",
+            "Alertmanager", "Recording rules", "Alert rules", "Prometheus pushgateway", "Node exporter",
+            "Grafana", "Grafana dashboards", "Grafana panels", "Grafana variables", "Grafana alerts",
+            "Grafana Loki", "Log aggregation", "ELK stack", "Elasticsearch", "Logstash",
+            "Kibana", "Filebeat", "Metricbeat", "Beats", "Index patterns",
+            "Splunk", "SPL", "Splunk forwarders", "Splunk apps", "Log parsing",
+            "Fluentd", "Fluent Bit", "Log shippers", "Log rotation", "Centralized logging",
+            "APM", "Application monitoring", "Distributed tracing", "Jaeger", "Zipkin",
+            "OpenTelemetry", "Trace context", "Spans", "Trace sampling", "Service dependencies",
+            "New Relic", "Datadog", "Dynatrace", "AppDynamics", "Elastic APM",
+            "SLIs", "SLOs", "SLAs", "Error budgets", "Service reliability",
+            "Uptime monitoring", "Synthetic monitoring", "Real user monitoring", "Page speed", "Web vitals",
+            "Infrastructure monitoring", "Network monitoring", "Database monitoring", "Container monitoring", "Kubernetes monitoring",
+            "Alert fatigue", "Alert tuning", "On-call rotation", "Incident detection", "Anomaly detection",
+            "Metrics retention", "Log retention", "Data visualization", "Custom metrics", "Business metrics",
+            "Golden signals", "RED method", "USE method", "Latency", "Traffic",
+            "Errors", "Saturation", "Utilization", "Request rate", "Error rate",
+            
+            // SRE Principles (70+ topics)
+            "Site Reliability Engineering", "Google SRE", "DevOps vs SRE", "Reliability", "Availability",
+            "Uptime", "Downtime", "MTBF", "MTTR", "MTTD",
+            "MTTF", "Incident management", "Incident response", "Incident commander", "Postmortems",
+            "Blameless culture", "Root cause analysis", "Five whys", "Fishbone diagram", "Action items",
+            "Toil", "Toil reduction", "Automation", "Runbooks", "Playbooks",
+            "On-call", "Escalation", "Paging", "War rooms", "Communication",
+            "Stakeholder updates", "Status pages", "Change management", "Change advisory board", "Emergency changes",
+            "Capacity planning", "Load testing", "Stress testing", "Performance testing", "Scalability testing",
+            "Chaos engineering", "Chaos Monkey", "Failure injection", "Resilience testing", "Game days",
+            "Progressive delivery", "Deployment frequency", "Lead time", "Change failure rate", "DORA metrics",
+            "Mean time to recovery", "Reliability patterns", "Graceful degradation", "Bulkhead pattern", "Timeout pattern",
+            "Retry pattern", "Backoff strategies", "Exponential backoff", "Jitter", "Health checks",
+            "Dependency management", "Service dependencies", "Critical path", "Single point of failure", "Redundancy",
+            "High availability", "Disaster recovery", "RTO", "RPO", "Backup strategies",
+            "Multi-region", "Active-active", "Active-passive", "Failover", "Service meshes",
+            
+            // Databases (90+ topics)
+            "Relational databases", "NoSQL databases", "SQL", "DDL", "DML",
+            "PostgreSQL", "MySQL", "Oracle", "SQL Server", "SQLite",
+            "Indexes", "Primary key", "Foreign key", "Unique constraint", "Check constraint",
+            "Transactions", "ACID", "BEGIN", "COMMIT", "ROLLBACK",
+            "Isolation levels", "Read uncommitted", "Read committed", "Repeatable read", "Serializable",
+            "Database normalization", "1NF", "2NF", "3NF", "Denormalization",
+            "Joins", "Inner join", "Left join", "Right join", "Full outer join",
+            "Aggregation", "GROUP BY", "HAVING", "COUNT", "SUM",
+            "AVG", "MAX", "MIN", "Subqueries", "CTEs",
+            "Views", "Materialized views", "Stored procedures", "Functions", "Triggers",
+            "MongoDB", "Collections", "Documents", "BSON", "Aggregation pipeline",
+            "Redis", "Key-value store", "Redis data types", "Redis persistence", "Redis cluster",
+            "Cassandra", "Wide-column store", "Consistency level", "Replication factor", "Gossip protocol",
+            "DynamoDB", "Partition key", "Sort key", "Global secondary index", "Local secondary index",
+            "Database replication", "Master-slave", "Master-master", "Synchronous replication", "Asynchronous replication",
+            "Database sharding", "Horizontal partitioning", "Vertical partitioning", "Shard key", "Resharding",
+            "Connection pooling", "Query optimization", "EXPLAIN", "Query planner", "Statistics",
+            "Database backup", "Full backup", "Incremental backup", "Point-in-time recovery", "WAL",
+            
+            // Security (100+ topics)
+            "InfoSec", "Cybersecurity", "Security by design", "Defense in depth", "Zero trust",
+            "Authentication", "Authorization", "Identity", "Access control", "Least privilege",
+            "OAuth", "OAuth 2.0", "OpenID Connect", "SAML", "SSO",
+            "JWT", "API keys", "Basic auth", "Bearer tokens", "Refresh tokens",
+            "MFA", "2FA", "TOTP", "Biometric auth", "Password policies",
+            "RBAC", "ABAC", "ACLs", "IAM", "Policy as code",
+            "Encryption", "Symmetric encryption", "Asymmetric encryption", "AES", "RSA",
+            "Hashing", "SHA-256", "bcrypt", "Salt", "Rainbow tables",
+            "TLS", "SSL", "Certificate pinning", "HSTS", "OCSP",
+            "Secrets management", "HashiCorp Vault", "Environment secrets", "Secret rotation", "KMS",
+            "Network security", "Firewalls", "WAF", "IDS", "IPS",
+            "DDoS protection", "Rate limiting", "IP whitelisting", "IP blacklisting", "Geo-blocking",
+            "Container security", "Image scanning", "Runtime security", "Admission control", "Pod security",
+            "Vulnerability management", "CVE", "CVSS", "Patch management", "Security updates",
+            "SAST", "DAST", "SCA", "Dependency scanning", "License compliance",
+            "Security testing", "Penetration testing", "Red team", "Blue team", "Bug bounty",
+            "Compliance", "SOC 2", "ISO 27001", "PCI DSS", "HIPAA",
+            "GDPR", "Data privacy", "Data protection", "Data retention", "Right to deletion",
+            "Audit logging", "Security monitoring", "SIEM", "SOC", "Threat intelligence",
+            "Incident response", "Forensics", "Malware analysis", "Threat hunting", "Security automation",
+            
+            // System Design & Architecture (80+ topics)
+            "System architecture", "Distributed systems", "Microservices", "Monolith", "Service-oriented architecture",
+            "Event-driven architecture", "CQRS", "Event sourcing", "Domain-driven design", "Bounded context",
+            "API design", "RESTful API", "API versioning", "API documentation", "OpenAPI",
+            "GraphQL schema", "Mutations", "Subscriptions", "DataLoader", "N+1 problem",
+            "Caching", "Cache-aside", "Write-through", "Write-behind", "Read-through",
+            "Cache invalidation", "Cache warming", "Cache stampede", "CDN caching", "Edge caching",
+            "Load balancing algorithms", "Consistent hashing", "Sticky sessions", "Session affinity", "Connection draining",
+            "Message queues", "RabbitMQ", "Kafka", "Kafka topics", "Kafka partitions",
+            "Consumer groups", "Message ordering", "Idempotency", "At-least-once delivery", "Exactly-once delivery",
+            "Scalability", "Horizontal scaling", "Vertical scaling", "Elasticity", "Auto-scaling",
+            "Performance optimization", "Database optimization", "Query optimization", "Index optimization", "Cache optimization",
+            "Latency reduction", "Compression", "Minification", "Lazy loading", "Prefetching",
+            "High availability", "Fault tolerance", "Redundancy", "Replication", "Failover",
+            "CAP theorem", "Consistency", "Availability", "Partition tolerance", "BASE",
+            "Eventual consistency", "Strong consistency", "Weak consistency", "Causal consistency", "Consensus",
+            "Paxos", "Raft", "Two-phase commit", "Saga pattern", "Distributed transactions",
+            
+            // Additional Performance & Optimization (20+ topics)
+            "Apache JMeter", "Gatling", "K6", "Locust", "Artillery",
+            "mpstat", "vmstat", "iostat", "iotop", "iftop",
+            "nload", "iperf3", "HTTP/2 multiplexing", "Server push", "Brotli compression",
+            "WebP images", "Image lazy loading", "Code splitting", "Tree shaking", "Bundle optimization",
+            "Service worker", "PWA", "IndexedDB", "LocalStorage", "SessionStorage"
+        ];
+
+        function loadTopics() {
+            const container = document.getElementById('topicGrid');
+            container.innerHTML = allTopics.map(topic => `
+                <div class="topic-tag">${topic}</div>
+            `).join('');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuiz();
+            loadFlashcards();
+            loadTopics();
+        });
+    </script>
+</body>
+</html>
